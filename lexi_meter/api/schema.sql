@@ -1,4 +1,3 @@
--- Schema Definition
 CREATE TABLE team_members (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -58,6 +57,7 @@ CREATE INDEX idx_answer_question_id ON answers(question_id);
 CREATE INDEX idx_user_response_team_member_id ON user_responses(team_member_id);
 CREATE INDEX idx_user_response_question_id ON user_responses(question_id);
 CREATE INDEX idx_user_response_answer_id ON user_responses(answer_id);
+
 
 -- Insert default quizzes
 INSERT INTO quizzes (title, description) VALUES ('General Knowledge Quiz', 'A quiz to test your general knowledge.');

@@ -2,6 +2,9 @@ from fastapi import FastAPI, WebSocket, status, WebSocketDisconnect
 from typing import Dict
 import uvicorn
 
+import sqlite3
+import os
+
 app = FastAPI()
 
 
@@ -30,11 +33,31 @@ class QuizManager:
 
 manager = QuizManager()
 
+DATABASE_URL = "lexi_meter/data/data.db"
+SCHEMA_FILE = "lexi_meter/api/schema.sql"
+
+
+def initialize_database():
+    """Initializes the database using the schema.sql file if it doesn't exist."""
+    if not os.path.exists(DATABASE_URL):
+        connection = sqlite3.connect(DATABASE_URL)
+        cursor = connection.cursor()
+
+        with open(SCHEMA_FILE, "r") as schema_file:
+            schema_sql = schema_file.read()
+
+        cursor.executescript(schema_sql)
+        connection.commit()
+        connection.close()
+        print("Database initialized")
+    else:
+        print("Database already exists")
+
 
 @app.on_event("startup")
 def on_startup():
-    """Creates database on start-up"""
-    pass
+    """Creates database on start-up if it doesn't exist"""
+    initialize_database()
 
 
 @app.post("/create-quiz/", status_code=status.HTTP_201_CREATED)
